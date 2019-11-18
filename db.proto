@@ -1,0 +1,378 @@
+//syntax="proto3";
+package db_msg;
+
+import "common_msg.proto";
+import "share_msg.proto";
+//DB消息中单数需要返回
+//双数不需要返回
+//////////////////////////////////////////////////////
+//分表消息<date start="0x10010001" end="0x1001ffff" />
+//////////////////////////////////////////////////////
+
+message load_user_msg//1,0x10010101#获取角色登录信息
+{
+}
+
+message load_user_msg_res
+{
+	optional string nick = 1;//昵称
+	optional uint32 head = 2;//头像
+	repeated common_msg.event_t events = 3;//事件信息
+	repeated share_msg.item_t items = 7;//道具信息
+	repeated share_msg.mail_t mails = 8;//邮件
+	
+	repeated share_msg.pet_t pets = 11;//宠物
+	repeated share_msg.furniture_t furnitures = 12;//家具
+}
+
+message logout_user_msg//0,0x10010102#下线更新信息
+{
+	optional uint32 last_logout_time = 2;//下线时间
+}
+
+//改变头像
+message change_head_msg//0,0x10010104
+{
+	optional uint32 head = 1;//头像
+}
+
+message get_user_show_msg//1,0x10010105#获取玩家信息
+{
+	optional uint64 uid = 1;//用户ID
+}
+
+message get_user_show_msg_res
+{
+	optional share_msg.user_show_t user_show = 1;//用户信息
+}
+
+message get_peer_user_show_msg//1,0x10010107#获取对方玩家信息
+{
+	optional uint64 uid = 1;//用户ID
+}
+
+message get_peer_user_show_msg_res
+{
+	optional share_msg.peer_user_info_t peer_user_info = 1;
+}
+
+message get_peer_user_home_msg//1,0x10010109#获取玩家家信息
+{
+	optional uint64 uid = 1;//用户ID
+}
+
+message get_peer_user_home_msg_res
+{
+	optional share_msg.user_home_t user_home = 1;//用户家信息
+}
+	////////////////////////////////////////////////////////////
+	//事件消息类
+	////////////////////////////////////////////////////////////
+message update_event_msg//0,0x10010202#更新事件
+{
+	optional common_msg.event_t event = 1;
+}
+
+message get_events_msg//1,0x10010203#获取事件
+{
+}
+
+message get_events_msg_res
+{
+	repeated common_msg.event_t events = 1;
+}
+
+message del_event_msg//0,0x10010204#删除事件
+{
+	optional uint32 type = 1;
+	optional uint64 id = 2;
+}
+
+message del_event_by_type_msg//0,0x10010206#删除事件(按照类型,批量删除)
+{
+	optional uint32 type = 1;
+}
+
+message reduce_event_data_msg//0,0x10010208#减少 事件data
+{
+	optional common_msg.event_t event = 1;
+}
+
+message update_event_pay_time_msg//0,0x1001020a#更新事件的充值 time字段
+{
+	optional common_msg.event_t event = 1;
+	optional uint32 change_time_sec = 2;
+}
+
+message add_event_data_msg//0,0x1001020c#在已有的事件中   增加 事件data
+{
+	optional common_msg.event_t event = 1;
+}
+
+message update_pay_event_msg//0,0x1001020e#更新充值事件(广东移动)
+{
+	optional uint32 type = 1;
+	optional string account = 3; //账号
+	optional uint32 action = 4;//0：支付通知；1：退续订；2：取消订购
+}
+	////////////////////////////////////////////////////////////
+	//邮箱消息类
+	////////////////////////////////////////////////////////////
+message add_mail_msg//0,0x10010300#添加邮件
+{
+	optional share_msg.mail_t mail = 1;
+}
+
+message update_mail_state_msg//0,0x10010302#更新邮件状态
+{
+	optional share_msg.mail_t mail = 1;
+}
+
+message del_mail_msg//0,0x10010304#删除邮件
+{
+	optional uint64 idx = 1;
+}
+
+
+	////////////////////////////////////////////////////////////
+	//道具消息类
+	////////////////////////////////////////////////////////////
+message update_item_msg//0,0x10010402#更新道具
+{
+	optional share_msg.item_t item = 1;
+}
+
+message del_item_msg//0,0x10010404#删除道具
+{
+	optional share_msg.item_t item = 1;
+}
+
+message reduce_item_msg//0,0x10010406#减少道具
+{
+	optional share_msg.item_t item = 1;
+}
+
+message add_item_msg//0,0x10010408#增加道具
+{
+	optional share_msg.item_t item = 1;
+}
+
+message update_furniture_msg//0,0x1001040a#更新家具
+{
+	optional share_msg.furniture_t furniture = 1;
+}
+
+message update_pet_msg//0,0x1001040c#更新宠物
+{
+	optional share_msg.pet_t pet = 1;
+}
+
+//message update_pay_game_id_msg//0,0x1001040e#更新购买的小游戏
+//{
+//}
+
+	//////////////////////////////////////////////////////
+	//系统消息<date start="0x10010a00" end="0x10010aff" />
+	//////////////////////////////////////////////////////
+enum SYS_CMD
+{
+	SYS_CMD_BEGIN 		= 0x10010a00;//#start占位
+	SYS_CMD_END 			= 0x10010aff;//#end占位
+}
+
+message game_server_boot_msg//1,0x10010a01#game启动获取数据
+{
+}
+
+message game_server_boot_msg_res
+{
+	repeated common_msg.event_t events = 1;//事件信息
+}
+
+message load_rank_msg//1,0x10010a03#加载排行榜数据
+{
+}
+
+message load_rank_msg_res
+{
+	repeated share_msg.rank_user_t rank_user = 4;//用户数据
+}
+
+message load_btl_rank_msg//1,0x10010a05#加载btl排行榜数据
+{
+}
+
+message load_btl_rank_msg_res
+{
+	repeated share_msg.btl_rank_user_t rank_user = 1;//用户数据
+}
+
+message load_yesterday_btl_rank_msg//1,0x10010a07#加载 btl昨天 排行榜数据
+{
+}
+
+message load_yesterday_btl_rank_msg_res
+{
+	repeated share_msg.btl_rank_user_t rank_user = 4;//用户数据
+}
+
+message load_exprie_rank_msg//1,0x10010a09#加载 exprie 排行榜数据
+{
+}
+
+message load_exprie_rank_msg_res
+{
+	repeated share_msg.rank_user_t rank_user = 4;//用户数据
+}
+
+//////////////////////////////////////////////////////
+//单表消息<date start="0x10020001" end="0x1002ffff" />
+//gateway:
+//<date start="0x10020001" end="0x10020fff" />
+//////////////////////////////////////////////////////
+message login_msg//1,0x10020001#登录
+{
+	optional share_msg.E_PLATFORM platform = 1;//登录类型
+	optional string account = 2;//帐号
+	optional uint64 uid = 300; //使用用户ID登陆
+}
+
+message login_msg_res
+{
+}
+
+message create_role_msg//1,0x10020003#创建角色
+{
+	optional uint32 platform = 1;//登录类型common_msg.E_PLATFORM
+	optional string account = 2;//帐号
+	optional string nick = 3;//昵称
+	repeated share_msg.item_t add_items = 4;//添加的道具
+	repeated common_msg.event_t add_events = 5;//事件
+	optional uint32 head = 6;//头像
+}
+
+message create_role_msg_res
+{
+}
+
+//改变昵称
+message change_nick_msg//1,0x10020005#插入nick名字
+{
+	optional string nick = 1;//nick
+}
+message change_nick_msg_res
+{
+	optional uint32 res = 1;//0:已改变,1:失败,被占用
+	optional string nick = 2;//名字
+}
+
+message login_wx_msg//1,0x10020007#wx登录
+{
+	optional share_msg.E_PLATFORM platform = 1;//登录类型
+	optional string account = 2;//帐号
+	optional string wx_nick = 3;//昵称
+	optional string wx_unionid = 4;//微信用户统一标识
+}
+
+message login_wx_msg_res
+{
+}
+
+//////////////////////////////////////////////////////
+//单表消息
+//center:
+//<date start="0x10021001" end="0x10021fff" />
+//////////////////////////////////////////////////////
+
+
+
+message update_user_rank_msg//0,0x10021002#更新玩家排行数据
+{
+	optional share_msg.rank_user_t rank_user = 2;//用户数据
+}
+
+message update_user_rank_msg_res
+{
+}
+
+message delete_user_rank_msg//0,0x10021004#删除玩家排行
+{
+	optional uint32 type = 1; //排名类型(1-100为游戏ID)
+	optional uint64 uid = 2;//用户ID
+}
+message delete_user_rank_msg_res
+{
+}
+
+//////////////////////////////////////////////////////
+
+message update_user_btl_rank_msg//0,0x10021006#更新玩家btl排行数据
+{
+	optional share_msg.btl_rank_user_t rank_user = 1;//用户数据
+}
+
+message update_user_btl_rank_msg_res
+{
+}
+
+message update_yesterday_btl_rank_msg//0,0x10021008#更新 btl昨天 排行数据
+{
+	optional share_msg.btl_rank_user_t rank_user = 2;//用户数据
+}
+message update_yesterday_btl_rank_msg_res
+{
+}
+
+message delete_yesterday_btl_rank_msg//0,0x1002100a#删除 btl昨天 排行
+{
+}
+message delete_yesterday_btl_rank_msg_res
+{
+}
+
+message delete_user_btl_rank_msg//0,0x1002100c#删除玩家btl排行
+{
+	optional uint32 type = 1; //排名类型#share_msg.E_BTL_RANK_TYPE
+	optional uint64 uid = 2;//用户ID
+}
+message delete_user_btl_rank_msg_res
+{
+}
+
+message random_friend_msg//1,0x1002100d# 随机推荐好友
+{
+}
+
+message random_friend_msg_res
+{
+	repeated uint64 uid = 1;//用户ID
+}
+
+message check_uid_msg//1,0x1002100f# 检查UID是否合法
+{
+	optional uint64 uid = 2;//用户ID
+}
+
+message check_uid_msg_res
+{
+	optional uint64 uid = 2;//用户ID(0:没有查找到 其他:合法)
+}
+
+///exprie
+
+
+message update_exprie_rank_msg//0,0x10021010#更新 exprie 排行数据
+{
+	optional share_msg.rank_user_t rank_user = 2;//用户数据
+}
+message update_exprie_rank_msg_res
+{
+}
+
+message delete_exprie_rank_msg//0,0x10021012#删除 exprie 排行
+{
+	optional uint32 type = 1;//排名类型#share_msg.E_RANK_TYPE
+}
+message delete_exprie_rank_msg_res
+{
+}

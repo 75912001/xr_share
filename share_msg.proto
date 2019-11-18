@@ -1,0 +1,495 @@
+//syntax = "proto3";
+
+package share_msg;
+
+
+////////////////////////////////////////////////
+//枚举
+////////////////////////////////////////////////
+
+//平台类型
+enum E_PLATFORM
+{
+	E_PLATFORM_VISITOR = 0;//游客
+
+	E_PLATFORM_TIANJING_LIANTONG = 1;//天津联通
+	E_PLATFORM_PENG_BO_SHI = 2;//鹏博士
+	E_PLATFORM_DANG_BEI = 3;//当贝
+	E_PLATFORM_SHA_FA = 4;//沙发
+	E_PLATFORM_WEI_JING = 5;//微鲸
+	E_PLATFORM_PU_TAO = 11;//葡萄
+	E_PLATFORM_CHONG_QING = 13;//重庆
+	E_PLATFORM_WANG_SU = 15;//网宿
+	E_PLATFORM_HAI_XIN = 18;//海信
+	E_PLATFORM_HU_NAN_DDZ = 30;//湖南ddz
+	
+	
+	E_PLATFORM_T_SHA_FA = 6;//T沙发
+	E_PLATFORM_T_DANG_BEI = 7;//T当贝
+	E_PLATFORM_T_TIANJING_LIANTONG = 8;//T天津联通
+	E_PLATFORM_T_PENG_BO_SHI = 9;//T鹏博士
+	E_PLATFORM_T_WEI_JING = 10;//T微鲸
+	E_PLATFORM_T_PU_TAO = 12;//T葡萄
+	E_PLATFORM_T_CHONG_QING = 14;//T重庆
+	E_PLATFORM_T_WANG_SU = 16;//T网宿
+	E_PLATFORM_T_HAI_XIN = 17;//T海信(测试服)
+	
+	
+	//E_PLATFORM_XIAO_XIONG = 20;//xiaoxiong
+	
+	E_PLATFORM_XHX_TEST = 100;//网宿测试网络
+	E_PLATFORM_XHX_WANG_SU = 101;//网宿
+	//E_PLATFORM_XHX_TIANJING_LIANGTONG_TEST = 102;//T天津联通
+	E_PLATFORM_XHX_TIANJING_LIANGTONG = 103;//天津联通
+	E_PLATFORM_XHX_DANG_BEI = 104;//当贝
+	E_PLATFORM_XHX_GDYD = 105;//广东移动
+	E_PLATFORM_XHX_SH_DIAN_XIN = 106;//上海电信
+	E_PLATFORM_XHX_SICHUAN_YIDONG = 107;//四川移动
+	E_PLATFORM_XHX_SHANXI_YIDONG = 108;//陕西移动
+	
+	
+	
+}
+
+enum ERROR_CODE
+{
+	EC_SUCCESS 						= 0;//成功
+	EC_ERR_CODE 					= 1;//错误
+	EC_VALUE_INVALID 				= 2;//无效数值
+	EC_LOGIN_T 						= 3;//被登陆上来的用户T掉
+	EC_INEXISTENT_ITEM 				= 4;//不存在,道具
+	EC_INEXISTENT_USER 				= 5;//不存在,用户
+	EC_EXISTENT_ROLE 				= 6;//存在,角色
+	EC_INEXISTENT_ACCOUNT 			= 7;//不存在,帐号
+	EC_NO_APPROVED 					= 8;//尚未通过身份校验
+	EC_EVENT_LIMIT 					= 9;//事件上限
+	EC_USER_LEVEL 					= 10;//用户等级不足
+	EC_USER_BTL 					= 11;//用户在战斗状态
+	EC_PASSWORD 					= 14;//密码错误
+	EC_CHAT_LEN_MAX 				= 15;//聊天长度上限
+	EC_EXCEL_ERROR 					= 17;//配置表错误
+	EC_BUY_TIMES_UP_TO_LIMIT   		= 18;//购买次数达到上限
+	EC_USER_IN_ROOM			   		= 19;//用户在房间
+	EC_USER_BASE_MONEY			   	= 20;//用户押金不足
+	EC_USER_OUT_ROOM			   	= 21;//用户在房间外
+	EC_USER_IN_RUM_ROOM			   	= 22;//用户在运行的房间
+	EC_USER_IN_LOBBY			   	= 23;//用户在大厅中
+	EC_USER_OUT_LOBBY			   	= 24;//用户不在大厅中
+	EC_USER_NICK_EXIST			   	= 25;//用户昵称已存在
+	EC_INEXISTENT_ROOM 				= 26;//房间,不可进入
+	EC_FULL_ROOM 					= 27;//满,房间
+	EC_MAIL_INEXISTENT 				= 28;//邮件不存在
+	EC_MAIL_ATTACHMENT_INEXISTENT 	= 29;//邮件无附件
+	EC_ROOM_RUN 					= 30;//房间在进行中
+	EC_SHOP_STOCK 					= 31;//商店库存不足
+	EC_NEED_VIP						= 32;//需要VIP
+}
+
+//通用值
+enum E_COMMON
+{
+	option allow_alias = true;
+	E_COMMON_DEF = 0;
+	E_BTL_RANK_MAX_CNT = 50;
+	E_PET_STAR_MAX = 6;
+	E_GAME_PK_VAL_DEF = 1000000000;
+}
+
+enum E_PET_BUF{
+	E_PET_BUF_CHAOFENG = 1;//1:嘲讽 =>对方必须先进攻具有嘲讽状态
+	E_PET_BUF_HUZHAO = 2;//2:护罩 =>抵消一次普通攻击
+	E_PET_BUF_CHANRAO = 3;//3:缠绕 =>无法行动
+	E_PET_BUF_DONGJIE = 4;//4:冻结 =>无法行动
+	E_PET_BUF_FENGLI = 5;//5:锋利 =>每回合固定增加1点攻击,可累加
+	E_PET_BUF_BINGDU = 6;//6:病毒 =>受伤后，持续掉1点血3回合
+	E_PET_BUF_XUENIU = 7;//7:血牛 =>每回合固定增加1点血量,可累加
+	
+	E_PET_BUF_ADD_ACK = 100;//100:增加攻击p1点  主动攻击时候才可用
+	E_PET_BUF_ADD_HP = 101;//101:增加hp,p1点
+	E_PET_BUF_ADD_ACK_ZHUDONG = 102;//102:增加攻击p1点  主动攻击时候才可用
+	
+	//[200,300) 范围是被动 添加的 附近影响的buf
+	E_PET_BUF_NEAR_ADD_ACK = 200;//增加攻击p1点, 由p3宠物key触发
+	E_PET_BUF_NEAR_ADD_HP = 201;//增加hp,p1点, 由p3宠物key触发
+	E_PET_BUF_NEAR_CHAOFENG = 202;//嘲讽, 由p3宠物key触发
+}
+
+//通告
+enum E_NOTICE
+{
+	E_NOTICE_SHOP = 1;//商城购买
+	E_NOTICE_PAY = 2;//PAY购买
+	E_NOTICE_SYS = 5;//系统公告
+}
+
+
+enum E_MAIL_STATE_TYPE
+{
+	E_MAIL_STATE_UNREAD = 0;//未读
+	E_MAIL_STATE_READ = 1;//已读
+	E_MAIL_STATE_GET_ATT = 2;//领取过附件
+}
+
+//道具
+enum E_ITEM_ID
+{
+	option allow_alias = true;
+	E_ITEM_ID_CASH = 100000;//点券
+	E_ITEM_ID_MONEY = 100001;//钱
+	E_ITEM_ID_VIP_EXP = 100002;//vip经验
+	E_ITEM_ID_FLOWER = 100003;//	花
+
+	E_ITEM_ID_SIGN = 100008;//补签卡
+	
+	E_ITEM_ID_KEY_1 = 200001;//铜
+	E_ITEM_ID_KEY_2 = 200002;//银
+	E_ITEM_ID_KEY_3 = 200003;//金
+	E_ITEM_ID_KEY_4 = 200004;//翡翠
+	E_ITEM_ID_KEY_5 = 200005;//翡翠
+	E_ITEM_ID_KEY_6 = 200006;//翡翠
+}
+
+//用户身体数据
+enum E_USER_BODY_TYPE
+{
+	E_USER_BODY_TYPE_FACE = 1;//脸/面饰
+	E_USER_BODY_TYPE_HAIR = 2;//发
+	E_USER_BODY_TYPE_JACKET = 3;//上衣
+	E_USER_BODY_TYPE_TROUSERS = 4;//裤子
+	E_USER_BODY_TYPE_SHOES = 5;//鞋
+	E_USER_BODY_TYPE_BOTTOM = 6;//下部/翅膀
+	E_USER_BODY_TYPE_TOY = 7;//玩具
+}
+message key_val_t
+{
+	optional uint32 key = 1;//key
+	optional uint32 val1	= 2;//数值1
+	optional uint32 val2	= 3;//数值2
+	optional uint32 val3	= 4;//数值3
+}
+
+message game_info_t
+{
+	optional uint32 id = 1;//游戏ID
+	optional uint64 cnt	= 2;//次数
+	optional uint32 user_score_max	= 3;//玩家分数最大值
+}
+
+message rank_user_t
+{
+	optional uint32 type = 1;//排名类型#share_msg.E_RANK_TYPE
+	optional uint32 val = 6;//数据
+	optional uint32 tim = 7;//时间
+
+	optional user_show_t user_show = 9;
+}
+
+//战斗排行类型
+enum E_BTL_RANK_TYPE
+{
+	E_BTL_RANK_TYPE_COMMON = 1;//常规战斗
+	E_BTL_RANK_TYPE_YESTERDAY = 2;//昨天常规战斗
+	
+}
+
+message btl_rank_user_t
+{
+	optional uint32 type = 1;//排名类型#share_msg.E_BTL_RANK_TYPE
+	optional uint32 win_cnt = 2;//胜利次数
+	optional uint32 exp = 3;//胜点
+	optional uint32 tim = 7;//时间
+
+	optional user_show_t user_show = 9;
+}
+
+message game_rank_t
+{
+	optional uint32 id = 1;//游戏ID
+	repeated rank_user_t rank_user	= 2;//次数
+}
+
+message btl_rank_t
+{
+	repeated btl_rank_user_t rank_user	= 2;
+}
+////////////////////////////////////////////////
+//基础结构
+////////////////////////////////////////////////
+
+//道具基础结构
+message item_t
+{
+	optional uint32 id = 1;//道具id
+	optional uint32 cnt = 2;//数量
+}
+
+//宠物基础结构
+message pet_t
+{
+	optional uint32 id = 1;//id
+	optional uint32 exp = 3;//exp
+	optional uint32 cnt = 4;//数量
+	optional uint32 skill_id = 5;//可用的技能ID
+}
+
+//宠物在家基础结构
+message pet_home_t
+{
+	optional uint32 id = 1;//id
+	optional uint32 idx = 3;//位置
+}
+
+//宠物战斗结构
+message pet_btl_t
+{
+	optional uint32 id = 1;//id
+	optional uint32 lv = 2;//等级
+	optional uint32 skill_id = 3;//解锁技能ID
+	optional uint32 ack = 4;//攻击力
+	optional uint32 hp = 5;//血
+	optional uint32 congming = 6;//聪明
+	optional uint32 key = 7;//战斗中的唯一key
+}
+
+//战斗队伍结构
+message pet_team_t
+{
+	optional uint32 id = 1;//队伍ID
+	repeated uint32 pet_id = 2;//宠物id
+}
+
+//战斗 桌子上牌
+message btl_table_update_t
+{
+	optional uint64 uid = 1;//用户id
+	repeated pet_btl_t pet_btl = 2;//
+}
+
+//战斗结构
+message btl_user_t
+{
+	optional user_show_t user_show = 1;//
+	repeated pet_btl_t pet_btl = 3;//
+}
+
+//
+message pet_btl_buf_update_t
+{
+	optional uint32 key = 1;//
+	optional uint32 id = 2;//
+	optional int32 time = 3;//有效次数	
+	optional int32 round = 4;//持续回合数	
+	optional int32 param1 = 5;
+	optional int32 param2 = 6;//(增加的血量上限)
+	optional int32 param3 = 7;
+}
+
+//宠物战斗更新结构(变化量)
+message pet_btl_update_t
+{
+	optional uint64 uid = 1;//用户id
+	optional uint32 pet_id = 2;//id
+	optional uint32 pet_key = 3;//宠物key
+	
+	optional uint32 skill_id = 4;//技能(1:开启, 2:封印)
+	optional int32 ack = 5;//攻击力
+	optional int32 hp = 6;//血
+	repeated pet_btl_buf_update_t add_buf = 7;//增加的状态
+	repeated pet_btl_buf_update_t del_buf = 8;//删除的状态
+	
+	optional pet_btl_t add_pet_btl = 9;//增加到队伍中的宠物
+	optional pet_btl_t add_pet_btl_table = 10;//增加到桌面上的宠物
+	
+	optional uint32 is_ack = 100;//是否攻击(0:不是 1:是)
+}
+
+//战斗攻击
+message btl_ack_t
+{
+	optional uint64 ack_uid = 1;//用户id
+	optional uint32 ack_pet_id = 2;//宠物id
+	optional uint32 ack_pet_key = 3;//宠物key
+	optional uint32 ack_skill_id = 4;//技能id(0:普通攻击)
+	
+	//处理eff时候填充
+	repeated pet_btl_update_t pet_btl_update = 201;//影响的宠物
+}
+
+//战斗回合
+message btl_round_t
+{
+	repeated btl_ack_t btl_buf = 1;//buf处理buf
+	repeated btl_table_update_t btl_table_update = 10;//上牌
+	//回合buf变化量
+	repeated btl_ack_t btl_ack = 20;//ack
+}
+
+//战斗结构
+message btl_t
+{
+	repeated btl_user_t btl_user = 1;//初始状态
+	
+	repeated btl_round_t btl_round = 2;//战斗回合
+	
+	optional uint64 win_uid = 100;//获胜用户id
+}
+
+//家具基础结构
+message furniture_t
+{
+	optional uint32 id = 1;//id
+	optional uint32 x = 2;//
+	optional uint32 y = 3;//
+}
+
+//公告
+message notice_t
+{
+	optional uint32 id = 1;//公告id
+	optional uint64 uid = 2;//用户id
+	optional string nick = 3;//用户昵称
+	repeated string param = 5;//其他参数，根据公告需求不同，逗号分隔[1,2,3,4,5....]
+	//1[shop.txt序号];
+	//2[pay.xml序号];
+	//3[game_id, 倍数];
+	//4[shop.txt序号];
+	//5[内容];
+}
+
+//用户身体数据
+message user_body_t
+{
+	optional uint32 face = 1;//脸
+	optional uint32 hair = 2;//发
+	optional uint32 jacket = 3;//上衣
+	optional uint32 trousers = 4;//裤子
+	optional uint32 shoes = 5;//鞋
+	optional uint32 bottom = 6;//下部
+	optional uint32 toys = 7;//玩具
+}
+
+//用户显示数据
+message user_show_t
+{
+	optional uint64 uid = 1;//用户ID
+	optional string nick = 2;//昵称
+	optional uint32 head = 3;//头像
+	optional uint32 head_frame = 4;//头像框
+	optional string head_url = 5;//头像url
+	optional bytes head_data = 6;//头像数据
+	
+	
+	optional uint32 vip_exp = 7;//vip exp
+	repeated uint32 body = 10;//身上穿的衣服id
+	optional uint32 flower = 11;//花的数量
+	
+	optional uint32 game_pk_cnt = 12;//小游戏pk次数
+	optional uint32 game_pk_win_cnt = 13;//小游戏pk获胜次数
+	
+	optional uint32 pk_cnt = 14;//pk次数
+	optional uint32 pk_win_cnt = 15;//pk获胜次数
+	optional uint32 pk_val = 16;//PK值
+}
+
+//用户显示数据
+message user_home_t
+{
+	optional uint64 uid = 1;//用户ID
+	repeated furniture_t furniture = 2;//家具
+	optional uint32 wall = 3;//墙纸
+	repeated pet_home_t pet_home = 4;//宠物
+	optional uint32 flower = 11;//花的数量
+	repeated key_val_t game_score = 12;//游戏分数 key:游戏ID, val1:分数
+}
+
+
+//玩家在room中的显示
+message user_show_in_room_t
+{
+	//optional uint32 money = 5;//钱
+	//optional uint32 cash = 10;//点券
+	optional user_show_t user_show = 12;
+}
+
+//其他玩家的信息
+message peer_user_info_t
+{
+	optional user_show_t user_show = 1;
+
+	optional uint32 pet_cnt = 3;//宠物种类数量
+	optional uint32 achievement_cnt = 4;//成就数量
+	optional uint32 clothes_cnt = 5;//服装数量
+	optional uint32 furniture_cnt = 6;//家具数量
+	optional uint32 wall_cnt = 7;//墙纸数量
+	
+	optional uint32 pet_level_max_cnt = 10;//宠物满级数量
+	optional uint32 shanchang_game_id = 11;//擅长游戏ID(0:无)
+	optional uint32 ruoxiang_game_id = 12;//弱项游戏ID(0:无)
+//	optional uint32	game_pk_cnt = 40;//小游戏pk,次数
+//	optional uint32	game_pk_win = 41;//小游戏pk,胜利次数
+	optional uint32	game_pk_val = 45;//小游戏pk值
+	optional uint32	pk_val = 46;//pk值
+}
+
+//邮件赠送基础结构
+message mail_give_t
+{
+	optional user_show_t send_user = 1;//发送的用户
+	repeated share_msg.item_t items = 2;
+}
+
+////////////////////////////////////////////////////
+//任务
+////////////////////////////////////////////////////
+
+enum E_TASK_DAILY_TYPE
+{
+	E_TASK_DAILY_TYPE_1 = 1;//玩p1场游戏
+	E_TASK_DAILY_TYPE_2 = 2;//装扮小屋
+	E_TASK_DAILY_TYPE_3 = 3;//装扮角色
+	E_TASK_DAILY_TYPE_4 = 4;//抓宠物
+	E_TASK_DAILY_TYPE_5 = 5;//喂养宠物
+	E_TASK_DAILY_TYPE_6 = 6;//游戏积分
+	E_TASK_DAILY_TYPE_7 = 7;//游戏金币
+	E_TASK_DAILY_TYPE_8 = 8;//购买服装
+	E_TASK_DAILY_TYPE_9 = 9;//购买家具
+	E_TASK_DAILY_TYPE_10 = 10;//购买钻石
+}
+
+////////////////////////////////////////////////////
+//邮箱
+////////////////////////////////////////////////////
+message mail_shop_t
+{
+	optional uint32 id = 1;//道具ID
+	optional uint32 cnt = 2;//道具数量
+}
+
+//邮件
+message mail_t
+{
+	optional uint64 idx = 1;//邮件idx
+	optional uint64 uid = 2;//玩家id
+	optional uint32 state = 3;//邮件状态(0:未读，1:已读) share_msg.E_MAIL_STATE_TYPE
+	optional uint32 mail_id = 4;//配置表中的mail_id
+	optional string attachment = 6;//邮件附件, 依据mail_id来确定存储的protobuf
+	optional bytes bin_data = 7;//依据mail_id来确定存储的protobuf
+	optional uint32 time = 8;//邮件到期时间
+}
+
+message mail_1_t
+{
+	optional uint64 uid = 1;//玩家id
+	optional string nick = 2;//昵称
+	optional uint32 time = 8;//送花时间
+}
+
+message mail_2_t
+{
+	optional uint64 uid = 1;//玩家id
+	optional string nick = 2;//昵称
+	optional uint32 game_id = 3;//游戏ID
+	optional uint64 win_uid = 4;//获胜玩家UID
+	optional uint32 time = 8;//送花时间
+}
+

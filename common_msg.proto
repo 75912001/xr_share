@@ -1,0 +1,326 @@
+//syntax="proto3";
+package common_msg;
+import "share_msg.proto";
+
+//////////////////////////////////////////////
+//错误码
+//////////////////////////////////////////////
+enum E_ERROR_CODE
+{
+//通用错误
+	DEF_UNUSE = 0;
+	EEC_SERVER_ACCOUNT_FULL = 1;//帐号满
+	EEC_NO_TASK = 19; //任务错误
+	EEC_NO_TASK_FINISH = 20; //任务未完成
+	EEC_NO_TASK_REWARD = 21; //任务未领取奖励
+	EEC_CLI_EVENT_TYPE = 22; //客户端事件类型错误
+	EEC_USER_NO_BTL = 27;//用户不在战斗状态
+	EEC_TASK_UNFINISH = 39;//任务未完成
+	EEC_ITEM_CNT = 41; //道具不足
+	EEC_GOLD_CNT = 44; //金币不足
+	EEC_FRIEND_SELF_CNT = 57; //自己好友上限
+	EEC_HAS_FRIEND = 58; //自己已有该好友
+	EEC_FRIEND_APPLY_CNT = 59;//对方好友申请上限数量
+	EEC_IN_FRIEND_APPLY_CNT = 60;//在对方好友申请表中
+	EEC_IN_FRIEND = 61;//在对方好友表中
+	EEC_FRIEND_CNT = 62;//对方好友上限
+	EEC_SILVER_CNT = 65; //银币不足
+	EEC_TASK_FINISH_MAX = 83;//悬赏任务到达上线
+	EEC_TASK_FINISH = 84;//任务已领取
+	EEC_WECHAT_LOGIN = 99;//微信登录错误
+	EEC_BUILDING_LEVEL = 105;//建筑等级不足
+	EEC_NOT_IN_MAP = 111;//不再地图中
+	EEC_VIP_LEVEL = 117;//vip等级不足
+	EEC_USER_EXP_LEVEL = 125;//等级不足
+	EEC_ALI		= 130;//ALI错误
+	EEC_ALI_10 	= 131;//ALI请求参数错误(请求内容格式有误、gameID 有误、签名校验失败等)
+	EEC_ALI_11 	= 132;//ALI用户未登录(sid 不存在，请求地址有误等)
+	EEC_ALI_99 	= 133;//ALI服务器内部错误(接口名有误、请求地址有误等)
+	EEC_SYS_T = 134;//被系统T掉
+	EEC_CHAT_BAN = 135;//禁言
+	ECC_WRONG_NO_ENOUGH_ITEM = 150;  //没有足够的道具
+	EEC_ERROR_MYSQL = 6000;//数据库错误
+	EEC_MAX = 10000;//错误最大值
+}
+
+enum USER_EVENT_TYPE
+{
+	USER_EVENT_TYPE_DEF = 0;
+	//---------------------------------------------------------------------------- 
+	//每日事件 DAILY_EVENT_XX[10000000,19999999]
+	DAILY_EVENT_BEGIN						= 10000000;  
+	
+ 	DAILY_EVENT_TASK						= 10000001;//每日任务,id:任务ID,data:数据, str_data:领取到的节点(step_id)
+	DAILY_EVENT_FLOWER						= 10000002;//送花 id:peer_id 
+	DAILY_EVENT_ONLINE_REWARD				= 10000003;//每日在线礼包,id:0,data:领取过礼包的id.
+	DAILY_EVENT_ONLINE_REWARD_TIME_SEC		= 10000004;//每日在线礼包,积累的时间,id:0,data:积累的时间
+	DAILY_EVENT_FLOWER_MONEY				= 10000005;//送花 id:0, data:获取的金币数量  
+	DAILY_EVENT_TURNTABLE_CNT				= 10000006;//每日转盘数量,id:0, data:数量
+	DAILY_EVENT_RELIEF_CNT					= 10000007;//每日救济数量,id:0, data:数量
+	//DAILY_EVENT_TASK_CHANGE_CNT			= 10000008;//每日任务,id:0,data:更换过的次数	
+	DAILY_EVENT_GAME_PET_FOOD_CNT_MAX		= 10000009;//每日游戏宠物食物数量,id:0, data:已获取数量
+	DAILY_EVENT_PAY							= 10000010;//每日首充,id:pay_id,data:充值次数
+	DAILY_EVENT_SHARE						= 10000011;//每日分享,id:mail_id
+	DAILY_EVENT_GAME_MONEY_CNT_MAX			= 10000012;//每日游戏金币数量,id:0, data:数量, (上限为3000W)
+	DAILY_EVENT_SHOP_MEDAL_CNT_MAX			= 10000013;//每日商店勋章数量,id:勋章item_id, data:已获取数量
+	DAILY_EVENT_GAME_KEY_CNT_MAX			= 10000014;//每日游戏钥匙数量,id:钥匙item_id(0:代表全部钥匙), data:已获取数量
+	DAILY_EVENT_GAME_ADD_MONEY_CNT_MAX		= 10000015;//每日游戏金币数量,id:0, data:已获取数量
+	DAILY_EVENT_GAME_ADD_USER_EXP_CNT_MAX	= 10000016;//每日游戏经验数量,id:0, data:已获取数量
+	DAILY_EVENT_PET_BTL_RANK_REWARD    		= 10000019;//每日可以领取昨天战斗奖励 id:0
+	DAILY_EVENT_PLAY_GAME_REWARD    		= 10000020;//每日可以领取战斗次数奖励 id:0
+	DAILY_EVENT_GAME_PK_ADD_MONEY_CNT_MAX	= 10000021;//每日pk游戏金币数量,id:0, data:已获取数量
+	DAILY_EVENT_PLAY_GAME_CNT    			= 10000022;//每日玩小游戏次数 id:0, data:次数
+	DAILY_EVENT_PLAY_GAME_PK_CNT    		= 10000023;//每日玩小游戏pk次数 id:0, data:次数
+	DAILY_EVENT_PLAY_PK_CNT    				= 10000024;//每日pk次数 id:0, data:次数
+	
+	DAILY_EVENT_PK_ADD_EXP_CNT    			= 10000025;//每日pk获得exp数量 id:0, data:exp获得数量
+	DAILY_EVENT_SINGLE_GAME_CNT    			= 10000026;//每日游戏次数 id:game_id, data:数量
+	DAILY_EVENT_END							= 19999999;
+	//---------------------------------------------------------------------------- 
+
+	//---------------------------------------------------------------------------- 
+	//每周事件 WEEKLY_EVENT_XX[20000000,29999999]
+	WEEKLY_EVENT_BEGIN                  = 20000000;
+	//WEEKLY_EVENT_RECORD 				= 20000001;   //交易记录
+	WEEKLY_EVENT_END                    = 29999999;
+	
+	//---------------------------------------------------------------------------- 
+
+	//---------------------------------------------------------------------------- 
+	//每月事件 MONTHLY_EVENT_XX[30000000,39999999]
+	MONTHLY_EVENT_BEGIN	= 30000000;
+	 
+	MONTHLY_EVENT_SIGN			= 30000001;//签到,time:更新的时间, str_data:签到日期,1,3,4,5...
+	MONTHLY_EVENT_SIGN_REWARD	= 30000002;//签到领取奖励,time:更新的时间, str_data:已领取的,5,15,20,0...
+
+	
+	MONTHLY_EVENT_LOGIN			= 30000003;//登录,time:更新的时间, str_data:登录日期,1,3,4,5...
+	MONTHLY_EVENT_LOGIN_REWARD	= 30000004;//登录领取奖励,time:更新的时间, str_data:已领取的,5,15,20,0...
+	
+	
+	MONTHLY_EVENT_END                   = 39999999;
+	//---------------------------------------------------------------------------- 
+
+
+	//---------------------------------------------------------------------------- 
+	//永久事件 FOREVER_EVENT_XX [40000000,49999999]
+	FOREVER_EVENT_BEGIN                 = 40000000;
+	FOREVER_EVENT_IN_ROOM_PET			= 40000001;//房间中的宠物,id:位置序号,data:pet id
+	FOREVER_EVENT_ROLE_WALL				= 40000002;//使用的墙,id:0,data:墙纸ID
+	FOREVER_EVENT_ROLE_CLOTHES			= 40000003;//穿上的衣服,id:部位(share_msg.E_USER_BODY_TYPE),data:衣服ID
+//	FOREVER_EVENT_ROLE_LEVEL			= 40000004;//等级,id:0,data:经验值
+ 	FOREVER_EVENT_ROLE_REWARD			= 40000005;//新手礼包,id:0,data:role_reward id, time:领取的时间
+	FOREVER_EVENT_WX_LOGIN_REWARD		= 40000006;//微信登录礼包,id:0,data:1(已领取)
+	FOREVER_EVENT_FIRST_PAY				= 40000007;//首充,id:pay.xml中的id
+	FOREVER_EVENT_GAME_SCORE			= 40000008;//游戏分数 id:游戏id, data:分数
+	FOREVER_EVENT_MAIL_VERSION_REWARD	= 40000009;//邮件 版本 奖励,id:邮件ID
+//	FOREVER_EVENT_FREE_GAME_ID_PAY		= 40000010;//准备购买游戏,id:0, data:游戏ID
+	FOREVER_EVENT_FREE_GAME_ID			= 40000011;//买断的游戏,id:游戏ID
+	FOREVER_EVENT_VIP_PAY_REWARD		= 40000012;//已领取的  vip 按时间充值活动(每个时间段充值,只能领取一次),id:vip_pay_reward.xml中的id
+	FOREVER_EVENT_FIRST_GAME			= 40000013;//第一次玩小游戏,id:0
+	FOREVER_EVENT_IDX					= 40000014;//用户xx的唯一序号id:0,data:xx序号
+	FOREVER_EVENT_HEAD_FRAME			= 40000015;//用户头像框id:0,data:头像框ID
+	FOREVER_EVENT_FRIEND				= 40000016;//id:好友id 
+	FOREVER_EVENT_WX_HEAD_URL			= 40000017;//用户WX头像url id:0,str_data:头像url
+	FOREVER_EVENT_WX_HEAD_IMG			= 40000018;//用户WX头像IMG id:0,bin_data:头像IMG
+	FOREVER_EVENT_PET_BTL_WIN_CNT		= 40000020;//参与战斗的宠物胜利次数 id:0, data:胜利次数
+	FOREVER_EVENT_PET_BTL_EXP			= 40000021;//参与战斗的宠物胜点 id:0, data:胜点
+	FOREVER_EVENT_DUANWEI_LV_REWARD		= 40000022;//领取过的段位等级奖励 id:段位
+	//FOREVER_EVENT_EAT_CD_FOOD			= 40000023;//冷却时间 食物 id:宠物ID time:cd到期时间
+
+	FOREVER_EVENT_PK_VAL				= 40000024;//PK值 id:0 data:PK值
+	FOREVER_EVENT_PK_CNT				= 40000025;//PK次数 id:0 data:PK次数 time:胜利次数
+	FOREVER_EVENT_GAME_PK_CNT			= 40000026;//小游戏PK次数 id:0 data:PK次数 time:胜利次数
+	FOREVER_EVENT_BTL_TEAM				= 40000027;//战斗战队  id:第几战队,data:0,time:0,str_data:pet_id,pet_id,pet_id,....
+	//[40002000,40002999] 都是成就保留字段
+	FOREVER_EVENT_PET_SKILL				= 40000028;//宠物已激活技能  id:宠物id,data:技能id
+	//[40002000,40002999] 都是成就保留字段
+	FOREVER_EVENT_PET_LEVEL_MAX_CNT		= 40000029;//满级宠物数量 id:0 data:满级宠物数量
+	FOREVER_EVENT_GAME_VAL				= 40000030;//擅长游戏ID,弱项游戏ID id:0 data:擅长游戏ID(0:无) time:弱项游戏ID(0:无)
+	FOREVER_EVENT_GAME_PK_VAL			= 40000031;//小游戏PK值 id:0 data:PK值(share_msg::E_GAME_PK_VAL_DEF 初始值代表0)
+	
+	FOREVER_EVENT_BTL_TEAM_ID			= 40000032;//战斗战队  id:0,data:首发队伍ID
+	FOREVER_EVENT_ACTIVE				= 40000033;//活动信息  id:active.xml中的id,data:状态(0:未完成, 1:完成未领取, 2:完成已领取)
+	
+	
+	
+	FOREVER_EVENT_STATISITCS_FIRST_PAY	= 40001001;//统计,第一次充值.id:0,data:0
+	
+	FOREVER_EVENT_ACHIEVEMENT			= 40002000;//成就系统  40002000+成就ID ,id:0,data:完成的数据,str_data:领取过奖励的节点,(id,id,id)
+	//[40002000,40002999] 都是成就保留字段
+	
+	
+	//
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	//系统使用事件
+ 	FOREVER_EVENT_SYS_UID								= 48000001;//系统使用(UID == 0), data存现在分配到的玩家uid
+	FOREVER_EVENT_SYS_SERVER_OPEN_DAY					= 48000002;//系统使用(UID == 0), data存服务器开服的日期序号(从1970-01-01开始,yyyymmdd), time:sec
+	FOREVER_EVENT_SYS_SHOP_SALES_VOLUME					= 48000003;//系统使用(UID == 0),商店实体物品销量 id:物品id, data:销售数量, time:结束时间点
+	
+	FOREVER_EVENT_SYS_RANK_EXPRIE						= 48000004;//系统使用(UID == 0),过期排行 id:share_msg.E_RANK_TYPE, data:(rank_exprie_reward.xml timeEnd)
+	
+	FOREVER_EVENT_SYS_GAME_CNT							= 48000005;//系统使用(UID == 0),游戏次数 id:游戏id, data:次数
+	/////////////////////////////////////////////////////////////////////////////////
+	//客户端事件
+	//不关心,只占位.具体由客户端自行查询和存储...
+ 	FOREVER_EVENT_CLI_START								= 49000000;//客户端使用的事件开始
+	FOREVER_EVENT_CLI_EXP								= 49000001;//用户经验,id:游戏ID#share_msg.E_GAME_ID,data:exp
+ 	FOREVER_EVENT_CLI_END								= 49999998;//客户端使用的事件结束	
+	////////////////////////////////////////////////////////////////////////////////
+	
+	FOREVER_EVENT_END                   				= 49999999;
+	//---------------------------------------------------------------------------- 
+
+	
+	//----------------------------------------------------------------------------
+	//过期事件 EXPRIE_EVENT_XX [90000000-99999999]
+	EXPRIE_EVENT_BEGIN									= 90000000;
+					
+	EXPRIE_EVENT_ACCOUNT_BAN							= 90000005;   //封号id:0,time:到期时间
+	EXPRIE_EVENT_TALK_BAN								= 90000006;   //禁言id:0,time:到期时间
+	EXPRIE_EVENT_PAY_DAY								= 90000007;   //按天计算时长卡,id:pay.xml中的id,data:上一次领取时间,time:过期时间,str_data:购买的时间(秒)	
+				
+	EXPRIE_EVENT_RANK_REWARD							= 90000008;	  //过期排行领取过奖励,id:rank_exprie_reward.xml id ,time:过期时间
+	EXPRIE_EVENT_RANK_GAME_CNT							= 90000009;	  //过期排行,游戏次数,id:rank_exprie_reward.xml id ,data:次数,time:过期时间,str_data:是否领取过(有数据就是领取过)
+	
+	//EXPRIE_EVENT_FREE_GAME_ID							= 90000010;	  //准备购买游戏,id:游戏ID, time:过期时间
+	EXPRIE_EVENT_END									= 99999999;
+	
+	//---------------------------------------------------------------------------- 
+
+}
+
+//统计类型
+enum E_STATISTICS_TYPE
+{
+	//参数:(平台ID,UID,TIME_SEC)
+	E_STATISTICS_TYPE_1 = 1;//登录
+	//E_STATISTICS_TYPE_2 = 2;//付费(RMB)
+	E_STATISTICS_TYPE_3 = 3;//输金币流水(game_id,房间分数,钱的变化量)
+	E_STATISTICS_TYPE_4 = 4;//赢金币流水(game_id,房间分数,钱的变化量)
+	E_STATISTICS_TYPE_5 = 5;//牌局(game_id,房间分数)
+	
+	E_STATISTICS_TYPE_6 = 6;//注册
+	E_STATISTICS_TYPE_7 = 7;//第一次付费
+	
+	E_STATISTICS_TYPE_8 = 8;//下线(在线时长-秒)
+	
+	E_STATISTICS_TYPE_9 = 9;//小游戏次数(游戏ID,难度)
+	E_STATISTICS_TYPE_10 = 10;//宠物转盘抽奖(抽奖等级)
+	E_STATISTICS_TYPE_11 = 11;//宠物PK
+	E_STATISTICS_TYPE_12 = 12;//小游戏好友PK
+	E_STATISTICS_TYPE_13 = 13;//完成每日任务(任务ID)
+	
+	E_STATISTICS_TYPE_14 = 14;//所有玩家购买宠物钥匙个数(宠物钥匙ID)
+	
+	E_STATISTICS_TYPE_15 = 15;//上海电\四川移动\陕西移动,付费(pay_id,pay_amount,order_number,serial_number)
+
+	E_STATISTICS_TYPE_16 = 16;//上海电\四川移动\陕西移动,登录时已付费
+	E_STATISTICS_TYPE_17 = 17;//广东移动(退续订)
+	E_STATISTICS_TYPE_18 = 18;//广东移动(取消订购)
+	
+	E_STATISTICS_TYPE_1000 = 1000;//sys_action_msg:打开订购页面
+
+
+}
+
+//聊天类型ok
+enum E_CHAT_TYPE
+{
+	E_CHAT_TYPE_PRIVATE = 0;//私聊
+	E_CHAT_TYPE_MAP = 1;//本地图聊天
+	E_CHAT_TYPE_ALL = 2;//全服聊天
+	E_CHAT_TYPE_NOTICE = 3;//通知
+}
+
+enum E_MAIL_ID
+{	
+	E_MAIL_ID_100001 = 100001;
+	E_MAIL_ID_100002 = 100002;
+	E_MAIL_ID_100003 = 100003;
+	E_MAIL_ID_199999 = 199999;
+	
+	E_MAIL_ID_200001 = 200001;
+	E_MAIL_ID_299999 = 299999;
+	
+	E_MAIL_ID_300001 = 300001;
+	E_MAIL_ID_300002 = 300002;
+	E_MAIL_ID_399999 = 399999;
+	
+	E_MAIL_ID_400000 = 400000;
+	E_MAIL_ID_499999 = 499999;
+	
+	E_MAIL_ID_500001 = 500001;
+	E_MAIL_ID_599999 = 599999;
+}
+
+//room 服务的穿透消息 范围
+enum E_PENETRATE_ROOM_MSG{
+	E_PENETRATE_ROOM_MSG_DEF = 0;
+	E_PENETRATE_ROOM_MSG_BEGIN = 0x20000;
+	E_PENETRATE_ROOM_MSG_END = 0x2ffff;
+}
+
+////////////////////////////////////////////////////
+//结构体
+////////////////////////////////////////////////////
+
+
+
+//好友
+message friend_t
+{
+	optional uint64 id = 1;//好友ID
+	optional string nick = 2;//好友昵称
+	optional uint32 state = 4;//好友状态 E_FRIEND_STATE 0:离线,1:在线,2:申请
+	optional uint32 exp = 5;//经验
+}
+
+message event_t
+{
+	optional uint32 type = 1;//类型 49000001
+	optional uint64 id = 2;//ID
+	optional uint64 data = 3;//数据
+	optional uint32 time = 4;//时间
+	optional string str_data = 5;//字符串数据
+	optional bytes bin_data = 6;//字符串二进制数据
+}
+
+//奖励
+message reward_t
+{
+	repeated share_msg.item_t item = 1;//道具
+}
+
+message rank_role_t
+{
+	optional uint64 uid = 1;//用户ID
+	optional string name = 3;//名字
+	optional uint32 value = 4;//数值
+}
+
+
+//随机昵称
+message rand_nick
+{
+	optional string nick = 1;//昵称
+	optional uint32 flag = 2;//使用标记,默认0,使用1
+}
+
+
+////////////////////////////////////////////////////
+//道具方面
+////////////////////////////////////////////////////
+message item_cfg_t
+{
+	optional uint32  	  id 			= 1;  //道具id
+	optional uint32  	  stock 		= 2;  //道具库存
+	optional uint32  	  body_type 	= 3;  //衣服部位share_msg.E_USER_BODY_TYPE
+	optional uint32  	  add_pet_exp 	= 4;//增加宠物经验
+	optional uint32  	  pet_star 		= 5;//对应宠物星级
+	optional uint32  	  vip 			= 6;//是否vip可用 0:普通用户可用 1:vip可用
+
+}
+
